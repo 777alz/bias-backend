@@ -26,7 +26,7 @@ if credentials_path:
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  #session management
-CORS(app, supports_credentials=True)  #enable CORS with credentials support
+CORS(app, resources={r"/*": {"origins": "https://bias-detector-app.onrender.com"}}, supports_credentials=True)
 
 #store conversations by session ID
 conversation_store = {}
@@ -132,6 +132,14 @@ def chat():
         "response": ai_response,
         "conversationId": conversation_id
     })
+
+@app.route("/", methods=["OPTIONS"])  # Explicitly handle OPTIONS requests
+def handle_options():
+    response = jsonify({"message": "CORS preflight passed"})
+    response.headers["Access-Control-Allow-Origin"] = "https://bias-detector-app.onrender.com"
+    response.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+    return response, 200
 
 #cleanup for temporary credentials file
 @app.teardown_appcontext
