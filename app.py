@@ -4,7 +4,7 @@ import pathlib
 import uuid
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from google.generativeai import genai
+from google import genai
 from google.genai import types
 
 #use environment variable for credentials
